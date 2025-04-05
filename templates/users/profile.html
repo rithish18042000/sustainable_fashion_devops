@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+{% load crispy_forms_tags %}
+{% block content %}
+    <div class="content-section">
+        <div class="media">
+            <img class="rounded-circle account-img mr-3" src="{{ user.profile.image.url }}" style="width: 150px; height: 150px;">
+            <div class="media-body">
+                <h2 class="account-heading">{{ user.username }}</h2>
+                <p class="text-secondary">{{ user.email }}</p>
+                {% if user.profile.bio %}
+                    <p>{{ user.profile.bio }}</p>
+                {% endif %}
+                <p>
+                    {% if user.profile.sustainability_preference %}
+                        <span class="badge badge-success">Sustainability Preference: On</span>
+                    {% else %}
+                        <span class="badge badge-secondary">Sustainability Preference: Off</span>
+                    {% endif %}
+                </p>
+                <a href="{% url 'order-history' %}" class="btn btn-outline-info">View My Orders</a>
+            </div>
+        </div>
+        
+        <form method="POST" enctype="multipart/form-data" class="mt-4">
+            {% csrf_token %}
+            <fieldset class="form-group">
+                <legend class="border-bottom mb-4">Profile Info</legend>
+                {{ u_form|crispy }}
+                {{ p_form|crispy }}
+            </fieldset>
+            <div class="form-group">
+                <button class="btn btn-primary" type="submit">Update</button>
+            </div>
+        </form>
+    </div>
+{% endblock content %}

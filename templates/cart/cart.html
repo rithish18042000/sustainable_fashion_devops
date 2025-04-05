@@ -1,0 +1,76 @@
+{% extends "base.html" %}
+{% load crispy_forms_tags %}
+{% block content %}
+    <h1 class="mb-4">Your Shopping Cart</h1>
+    
+    {% if cart_items %}
+        <div class="table-responsive">
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th style="width: 15%">Product</th>
+                        <th style="width: 40%">Details</th>
+                        <th style="width: 15%">Price</th>
+                        <th style="width: 15%">Quantity</th>
+                        <th style="width: 15%">Subtotal</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for item in cart_items %}
+                        <tr>
+                            <td>
+                                <img src="{{ item.product.image.url }}" class="img-thumbnail" style="max-width: 100px;" alt="{{ item.product.name }}">
+                            </td>
+                            <td>
+                                <h5><a href="{% url 'product-detail' item.product.id %}">{{ item.product.name }}</a></h5>
+                                <small class="text-muted">{{ item.product.description|truncatechars:100 }}</small>
+                            </td>
+                            <td>€{{ item.product.price }}</td>
+                            <td>
+                                <form method="POST" action="{% url 'update-cart' item.id %}" class="form-inline">
+                                    {% csrf_token %}
+                                    <div class="form-group">
+                                        <input type="number" name="quantity" value="{{ item.quantity }}" min="1" class="form-control" style="width: 80px;">
+                                    </div>
+                                    <button type="submit" class="btn btn-sm btn-info ml-2">Update</button>
+                                </form>
+                            </td>
+                            <td>€{{ item.get_total_price }}</td>
+                            <td>
+                                <a href="{% url 'remove-from-cart' item.id %}" class="btn btn-sm btn-danger">
+                                    <i class="fas fa-trash"></i>
+                                </a>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                    <tr>
+                        <td colspan="4" class="text-right"><strong>Total:</strong></td>
+                        <td><strong>€{{ total }}</strong></td>
+                        <td></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        
+        <div class="d-flex justify-content-between mt-4">
+            <a href="{% url 'products' %}" class="btn btn-outline-secondary">
+                <i class="fas fa-arrow-left mr-2"></i>Continue Shopping
+            </a>
+            <a href="{% url 'checkout' %}" class="btn btn-success">
+                Proceed to Checkout<i class="fas fa-arrow-right ml-2"></i>
+            </a>
+        </div>
+    {% else %}
+        <div class="alert alert-info">
+            <h4 class="alert-heading">Your cart is empty!</h4>
+            <p>Looks like you haven't added any products to your cart yet.</p>
+            <hr>
+            <p class="mb-0">
+                <a href="{% url 'products' %}" class="btn btn-primary">
+                    <i class="fas fa-shopping-bag mr-2"></i>Browse Products
+                </a>
+            </p>
+        </div>
+    {% endif %}
+{% endblock content %}

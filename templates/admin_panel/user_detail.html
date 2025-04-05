@@ -1,0 +1,105 @@
+<!-- templates/admin_panel/user_detail.html -->
+{% extends "base.html" %}
+{% block content %}
+    <h1 class="mb-4">User: {{ user_profile.username }}</h1>
+    
+    <div class="row">
+        <div class="col-md-6 mb-4">
+            <div class="card">
+                <div class="card-header">
+                    <h5>User Information</h5>
+                </div>
+                <div class="card-body">
+                    <p><strong>Username:</strong> {{ user_profile.username }}</p>
+                    <p><strong>Email:</strong> {{ user_profile.email }}</p>
+                    <p><strong>Full Name:</strong> {{ user_profile.get_full_name|default:"Not provided" }}</p>
+                    <p><strong>Date Joined:</strong> {{ user_profile.date_joined|date:"F d, Y" }}</p>
+                    <p><strong>Last Login:</strong> {{ user_profile.last_login|date:"F d, Y" }}</p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-6 mb-4">
+            <div class="card">
+                <div class="card-header">
+                    <h5>Profile Information</h5>
+                </div>
+                <div class="card-body">
+                    {% if user_profile.profile %}
+                        <div class="text-center mb-3">
+                            <img src="{{ user_profile.profile.image.url }}" alt="{{ user_profile.username }}" class="rounded-circle" style="width: 150px; height: 150px;">
+                        </div>
+                        <p><strong>Bio:</strong> {{ user_profile.profile.bio|default:"Not provided" }}</p>
+                        <p><strong>Sustainability Preference:</strong> 
+                            {% if user_profile.profile.sustainability_preference %}
+                                <span class="badge badge-success">Yes</span>
+                            {% else %}
+                                <span class="badge badge-secondary">No</span>
+                            {% endif %}
+                        </p>
+                    {% else %}
+                        <p>No profile information available.</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="card mt-4">
+        <div class="card-header">
+            <h5>User's Orders</h5>
+        </div>
+        <div class="card-body">
+            {% if orders %}
+                <div class="table-responsive">
+                    <table class="table table-striped">
+                        <thead>
+                            <tr>
+                                <th>Order #</th>
+                                <th>Date</th>
+                                <th>Status</th>
+                                <th>Total</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for order in orders %}
+                                <tr>
+                                    <td>{{ order.id }}</td>
+                                    <td>{{ order.created|date:"F d, Y" }}</td>
+                                    <td>
+                                        {% if order.status == 'pending' %}
+                                            <span class="badge badge-warning">{{ order.get_status_display }}</span>
+                                        {% elif order.status == 'processing' %}
+                                            <span class="badge badge-info">{{ order.get_status_display }}</span>
+                                        {% elif order.status == 'shipped' %}
+                                            <span class="badge badge-primary">{{ order.get_status_display }}</span>
+                                        {% elif order.status == 'delivered' %}
+                                            <span class="badge badge-success">{{ order.get_status_display }}</span>
+                                        {% elif order.status == 'cancelled' %}
+                                            <span class="badge badge-danger">{{ order.get_status_display }}</span>
+                                        {% endif %}
+                                    </td>
+                                    <td>€{{ order.total_price }}</td>
+                                    <td>
+                                        <a href="{% url 'admin-order-detail' order.id %}" class="btn btn-sm btn-info">
+                                            <i class="fas fa-eye"></i> View
+                                        </a>
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            {% else %}
+                <p>This user has not placed any orders yet.</p>
+            {% endif %}
+        </div>
+    </div>
+    
+    <div class="mt-4">
+        <a href="{% url 'admin-user-management' %}" class="btn btn-outline-secondary">
+            <i class="fas fa-arrow-left mr-2"></i>Back to User Management
+        </a>
+    </div>
+{% endblock content %}

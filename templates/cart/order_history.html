@@ -1,0 +1,59 @@
+<!-- templates/cart/order_history.html -->
+{% extends "base.html" %}
+{% block content %}
+    <h1 class="mb-4">Your Order History</h1>
+    
+    {% if orders %}
+        <div class="table-responsive">
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>Order #</th>
+                        <th>Date</th>
+                        <th>Status</th>
+                        <th>Total</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for order in orders %}
+                        <tr>
+                            <td>{{ order.id }}</td>
+                            <td>{{ order.created|date:"F d, Y" }}</td>
+                            <td>
+                                {% if order.status == 'pending' %}
+                                    <span class="badge badge-warning">{{ order.get_status_display }}</span>
+                                {% elif order.status == 'processing' %}
+                                    <span class="badge badge-info">{{ order.get_status_display }}</span>
+                                {% elif order.status == 'shipped' %}
+                                    <span class="badge badge-primary">{{ order.get_status_display }}</span>
+                                {% elif order.status == 'delivered' %}
+                                    <span class="badge badge-success">{{ order.get_status_display }}</span>
+                                {% elif order.status == 'cancelled' %}
+                                    <span class="badge badge-danger">{{ order.get_status_display }}</span>
+                                {% endif %}
+                            </td>
+                            <td>€{{ order.total_price }}</td>
+                            <td>
+                                <a href="{% url 'order-detail' order.id %}" class="btn btn-sm btn-info">
+                                    <i class="fas fa-eye mr-1"></i>View
+                                </a>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    {% else %}
+        <div class="alert alert-info">
+            <h4 class="alert-heading">No Orders Yet!</h4>
+            <p>You haven't placed any orders yet.</p>
+            <hr>
+            <p class="mb-0">
+                <a href="{% url 'products' %}" class="btn btn-primary">
+                    <i class="fas fa-shopping-bag mr-2"></i>Browse Products
+                </a>
+            </p>
+        </div>
+    {% endif %}
+{% endblock content %}

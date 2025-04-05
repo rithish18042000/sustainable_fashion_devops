@@ -1,0 +1,43 @@
+<!-- templates/admin_panel/user_management.html -->
+{% extends "base.html" %}
+{% block content %}
+    <h1 class="mb-4">User Management</h1>
+    
+    <div class="card">
+        <div class="card-header">
+            <h5>All Users</h5>
+        </div>
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Username</th>
+                            <th>Email</th>
+                            <th>Date Joined</th>
+                            <th>Last Login</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for user in users %}
+                            <tr>
+                                <td>{{ user.id }}</td>
+                                <td>{{ user.username }}</td>
+                                <td>{{ user.email }}</td>
+                                <td>{{ user.date_joined|date:"F d, Y" }}</td>
+                                <td>{{ user.last_login|date:"F d, Y" }}</td>
+                                <td>
+                                    <a href="{% url 'admin-user-detail' user.id %}" class="btn btn-sm btn-info">
+                                        <i class="fas fa-eye"></i> View
+                                    </a>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+{% endblock content %}

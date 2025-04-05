@@ -1,0 +1,9 @@
+django
+django-crispy-forms
+pillow
+boto3
+pylint
+pytest
+pytest-django
+crispy-bootstrap4
+pytest-cov

@@ -1,0 +1,63 @@
+{% extends "base.html" %}
+{% block content %}
+    <!-- Hero Section -->
+    <div class="jumbotron text-center" style="background-color: #e3f2fd;">
+        <h1 class="display-4">Sustainable Fashion Marketplace</h1>
+        <p class="lead">Shop ethically sourced, eco-friendly fashion products</p>
+        <hr class="my-4">
+        <p>Browse our collection of sustainable fashion items from sellers who prioritize ethical practices.</p>
+        <a class="btn btn-primary btn-lg" href="{% url 'products' %}" role="button">
+            <i class="fas fa-shopping-bag mr-1"></i>Browse Products
+        </a>
+    </div>
+
+    <!-- Categories Section -->
+    <h2 class="mb-4 text-center">Shop by Category</h2>
+    <div class="row">
+        {% for category in categories %}
+            <div class="col-md-4 mb-4">
+                <div class="card text-center">
+                    <div class="card-body">
+                        <h5 class="card-title">{{ category.name }}</h5>
+                        <p class="card-text">{{ category.description|truncatechars:100 }}</p>
+                        <a href="{% url 'category-products' category.id %}" class="btn btn-outline-primary">View Products</a>
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+
+    <!-- Featured Products Section -->
+    <h2 class="mb-4 mt-5 text-center">Featured Products</h2>
+    <div class="row">
+        {% for product in products %}
+            <div class="col-lg-4 col-md-6 mb-4">
+                <div class="card h-100 product-card">
+                    <!-- Sustainability Badge -->
+                    <div class="sustainability-badge">
+                        {% if product.sustainability_score >= 80 %}
+                            <span class="badge badge-success">Eco Score: {{ product.sustainability_score }}</span>
+                        {% elif product.sustainability_score >= 50 %}
+                            <span class="badge badge-info">Eco Score: {{ product.sustainability_score }}</span>
+                        {% else %}
+                            <span class="badge badge-warning">Eco Score: {{ product.sustainability_score }}</span>
+                        {% endif %}
+                    </div>
+                    
+                    <img class="card-img-top" src="{{ product.image.url }}" alt="{{ product.name }}">
+                    <div class="card-body">
+                        <h5 class="card-title">{{ product.name }}</h5>
+                        <h6 class="card-subtitle mb-2 text-muted">€{{ product.price }}</h6>
+                        <p class="card-text">{{ product.description|truncatechars:100 }}</p>
+                    </div>
+                    <div class="card-footer bg-transparent">
+                        <a href="{% url 'product-detail' product.id %}" class="btn btn-sm btn-primary">View Details</a>
+                        <small class="text-muted float-right">
+                            By {{ product.seller.username }}
+                        </small>
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+{% endblock content %}

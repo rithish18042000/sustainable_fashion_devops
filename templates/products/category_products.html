@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+{% block content %}
+    <h1 class="mb-4">{{ category.name }} Products</h1>
+    <p class="lead mb-4">{{ category.description }}</p>
+    
+    <div class="row">
+        {% for product in products %}
+            <div class="col-lg-3 col-md-4 col-sm-6 mb-4">
+                <div class="card h-100 product-card">
+                    <!-- Sustainability Badge -->
+                    <div class="sustainability-badge">
+                        {% if product.sustainability_score >= 80 %}
+                            <span class="badge badge-success">Eco Score: {{ product.sustainability_score }}</span>
+                        {% elif product.sustainability_score >= 50 %}
+                            <span class="badge badge-info">Eco Score: {{ product.sustainability_score }}</span>
+                        {% else %}
+                            <span class="badge badge-warning">Eco Score: {{ product.sustainability_score }}</span>
+                        {% endif %}
+                    </div>
+                    
+                    <img class="card-img-top" src="{{ product.image.url }}" alt="{{ product.name }}">
+                    <div class="card-body">
+                        <h5 class="card-title">{{ product.name }}</h5>
+                        <h6 class="card-subtitle mb-2 text-muted">€{{ product.price }}</h6>
+                        <p class="card-text">{{ product.description|truncatechars:70 }}</p>
+                    </div>
+                    <div class="card-footer bg-transparent">
+                        <a href="{% url 'product-detail' product.id %}" class="btn btn-sm btn-primary">View Details</a>
+                        <small class="text-muted float-right">
+                            By {{ product.seller.username }}
+                        </small>
+                    </div>
+                </div>
+            </div>
+        {% empty %}
+            <div class="col-12">
+                <div class="alert alert-info">
+                    No products found in this category yet.
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+{% endblock content %}
