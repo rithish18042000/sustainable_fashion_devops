@@ -1,3 +1,4 @@
+"""All settings here"""
 import os
 from pathlib import Path
 
